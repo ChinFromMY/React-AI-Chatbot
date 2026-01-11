@@ -1,0 +1,36 @@
+*{
+  box-sizing: border-box;
+}
+
+html, body, root{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  background-color: #FAFAF8;
+  overflow: hidden;
+}
+
+/* Add this new style to index.css or a main App.css file */
+#app-wrapper {
+    display: flex;
+    flex-direction: column; /* Stacks Header on top of Chatbot */
+    height: 100vh; 
+    width: 100%;
+}
+
+/* Ensure Chatbot fills remaining space */
+.chatbot-container {
+    flex-grow: 1; /* Make the Chatbot component fill the remaining space */
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.chatbot-messages{
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
