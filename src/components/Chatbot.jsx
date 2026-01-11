@@ -1,4 +1,4 @@
-import "./ChatBot.css";
+import "./Chatbot.css";
 import { useState, useRef, useEffect } from "react";
 import { Bot, Loader2, Send } from "lucide-react";
 import Message from "./Message";
