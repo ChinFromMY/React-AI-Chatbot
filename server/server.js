@@ -2,11 +2,16 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { InferenceClient } from '@huggingface/inference';
+import path from 'path';
+import {fileURLToPath} from 'url';
 
 dotenv.config(); // load .env variables
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -30,8 +35,7 @@ app.post('/api/chat', async (req, res) => {
     });
 
     // Extract the assistant's response
-    const botMessage = chatCompletion.choices[0].message?.content || 
-                       "Sorry, I couldn't generate a response.";
+    const botMessage = chatCompletion.choices[0].message?.content || "Sorry, I couldn't generate a response.";
 
     console.log("Bot response:", botMessage);
     res.json({ generated_text: botMessage });
@@ -50,6 +54,25 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// server react frontend
+app.use(express.static(path.join(__dirname, "../dist")));
+
+// add content security policy headers to allow Google Fonts
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src: 'self'"
+  );
+  next();
+})
+
+// SPA fallback: send index.html for all other routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
+});
+
+
+// start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
